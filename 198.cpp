@@ -9,18 +9,19 @@ public:
         if (nums.size() == 0) return 0;
         if (nums.size() == 1) return nums[0];
 
-        vector<int> best(nums.size(), 0);
-
-        best[0] = nums[0];
-        best[1] = max(nums[0], nums[1]);
+        int prev2 = nums[0];
+        int prev1 = max(nums[0], nums[1]);
         for (size_t i = 2; i < nums.size(); ++i) {
-            best[i] = max(
-                best[i - 1],
-                best[i - 2] + nums[i]
+            int best = max(
+                prev1,
+                prev2 + nums[i]
             );
 
+            prev2 = prev1;
+            prev1 = best;
+
         }
-        return best.back();
+        return prev1;
     }
 };
 
