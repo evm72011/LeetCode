@@ -6,49 +6,23 @@
 
 using namespace std;
 
-
 class Solution {
 public:
     int coinChange(vector<int>& coins, int amount) {
-        if (amount == 0) return 0;
-        if (amount < 0) return -1;
+        const int INF = amount + 1;
+        vector<int> dp(amount + 1, INF);
 
-        if (mp.count(amount)) return mp[amount];
+        dp[0] = 0;
 
-        int result = INT_MAX;
-
-        for (int coin : coins) {
-            int sub = coinChange(coins, amount - coin);
-
-            if (sub == -1) continue;
-
-            result = min(result, sub + 1);
+        for (int a = 1; a <= amount; ++a) {
+            for (int coin : coins) {
+                if (coin <= a) {
+                    dp[a] = min(dp[a], dp[a - coin] + 1);
+                }
+            }
         }
 
-        mp[amount] = (result == INT_MAX ? -1 : result);
-        return mp[amount];
-    }
-
-private:
-    unordered_map<int,int> mp;
-};
-
-class Solution_ {
-public:
-    int coinChange(vector<int>& coins, int amount) {
-        if (amount == 0) return 0;
-        if (amount < 0) return -1;
-
-        priority_queue<int, vector<int>, greater<int>> pq;
-        for (int coin : coins) {
-            auto target = amount - coin;
-            
-            auto result = coinChange(coins, target);
-            if (result < 0) continue;
-            pq.push(1 + result);
-        }    
-
-        return pq.size() > 0 ? pq.top() : -1;
+        return dp[amount] == INF ? -1 : dp[amount];
     }
 };
 
